@@ -1,0 +1,73 @@
+#include <iostream> //directive for c++
+#include <cmath> // cmath directive allows math to be done within the code 
+#include <iomanip> //used to have setprecision and other functions 
+using namespace std; //is used so that we dont have to write out std:: everytime 
+
+
+int main()
+{
+    const double k = 9.0e9;  //Coulomb constant given for the formula 
+    double charge;  //holds the decimal value of the total charge of the ring, is double because the size of the value may be large 
+    double ringRadius = 1.0;  //the given decimal value of the radius which is 1 meter 
+    double p_x, p_y, p_z, x, y, R;  //coordinate variables p_x, p_y, p_z --> the coordinates of the exact values and point P
+    //variables x, y --> the coordinate of each point charge on the ring
+    //R --> the distance between the center of the ring of charge and the point P
+    double distance = 0.03;  //holds the given value of the distance between P the charges on the ring
+    float Etotal,Ex = 0.0, Ey = 0.0, Ez = 0.0;  //float temp values for the x,y,z 
+    double Eresult;  //end values of Ex, Ey,Ez from the electric field at P
+    double angleTheta;  //decimal value used for converting cartesian coordinates to spherical coordinates
+    double anglePhi;  //decimal value used for converting cartesian coordinates to spherical coordinates
+    int N;  //number of point charges on the disk
+    float x_vector, y_vector, z_vector;  //vectors that we use for the distance between the point charge and P in cartesian coordinates
+  
+
+    cout << "How much charge you want put on the ring?" << endl;  //prompts the user to input the total charge of the ring
+    cin >> charge;  //user give the value to store it into the variable charge
+    cout << endl;  //creates a new line for organization 
+
+cout << "How many points you want put on the ring?" << endl;  //prompts the user to input the number of point charges on the ring
+    cin >> N;  //user gives the value to store it into the variable N
+    cout << endl;  //creates a new line for organization 
+
+
+    cout << "Please input the x, y, z coordinates for your point in space: "<< endl;  //prompts the user to input the x,y,z coordinates of P
+    cout << "X coordinate: ";  //asking the user for the x value
+    cin >> p_x;  //stores this value in p_x
+    cout << "Y coordinate: ";  //asking the user for the y value
+    cin >> p_y;  //stores this value in p_y
+    cout << "Z coordinate: ";  //asking the user for the y value
+    cin >> p_z;  //stores this value in p_z
+    
+    for(int i = 0; i < N; i++)  //for loop that goes through every point charge on the disk and calculates the Ex, Ey and Ez components until it reaches the value of i
+    
+     {
+         x = cos(i*360./N/57.3);   //creates a new point on the disk in radians
+         y = sin(i*360./N/57.3);
+
+        x_vector = p_x - x;  //uses substraction of the the two values and stores the x component of the distance between P and point charge on disk
+        y_vector = p_y - y;  //uses substraction of the the two values and stores they component of the distance between P and point charge on disk
+        z_vector = p_z;      //uses substraction of the the two values and stores thez component of the distance between P and point charge on disk 
+        
+        distance = sqrt(pow(x_vector, 2) + pow(y_vector, 2) + pow(z_vector, 2));  //calculate the distance between point P and point charge
+        
+        R = sqrt(pow(p_x, 2) + pow(p_y, 2) + pow(p_z, 2));  //store distance between the center of the disk and P into the value of R
+        
+        angleTheta = atan(y_vector/x_vector);  //calculates, stores and used to calculate Ex and Ey using spherical coordinates into given variable 
+        
+        anglePhi = acos(z_vector/distance);  //calculates, stores and used to calculate Ex and Ey using spherical coordinates into variable 
+        
+        Etotal = (k * (charge/N)) / (distance*distance);  //the electric field of the point charge
+       
+        Ex = Ex + Etotal * sin(anglePhi) * cos(angleTheta);  //in for loop it accumulates sum of the Ex components of the point charges on the disk into the flaot var
+        Ey = Ey + Etotal * sin(anglePhi) * sin(angleTheta);  //in for loop it accumulates sum of the Ey components of the point charges on the disk into var
+        Ez = Ez + Etotal * cos(anglePhi);                    //in for loop it accumulates sum of the Ez components of the point charges on the disk into var 
+    }
+  
+    Eresult = sqrt(pow(Ex, 2) + pow(Ey, 2) + pow(Ez, 2));  //calculates and uses the sqrt function and stores the total electric field at the point P in Eresult 
+  
+    cout << fixed << setprecision(2);  //sets the value 2 decimal places after the value is calculated
+    cout << "The distance from the point to the center of the ring is " << R << " meters." << endl << endl;  //outputs the distance between P and the center of the disk
+    cout << "The electric field at that point is " << Eresult << " N/C." << endl;  //outputs on the screen the electric field at P
+    std::cout << "scientific:\n" << std::scientific;  //outputs the scientific: and returns to the start of the next line the std:: is not necessary 
+  std::cout << Eresult << '\n'; //outputs the electric field since its been calculated in scientific notation
+  return 0;  //return 0 is used as an end for the program
